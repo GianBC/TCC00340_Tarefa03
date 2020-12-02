@@ -59,15 +59,14 @@ public class ServiceResource {
         evento.setArea(area);
         evento.setInst_org(inst_org);
         dao.setPersistir(evento);
-        long id_r=evento.getId();
-        evento=dao.getEventoPorID(id_r);
         return evento;
     }
 
     @POST
     @Path("/edicao/{id}")
     @Consumes({MediaType.APPLICATION_FORM_URLENCODED})
-    public void create_Form_Edicao(@PathParam("id") Long id_evento, @FormParam("numero") String numero,
+    @Produces({MediaType.APPLICATION_XML})
+    public Edicao create_Form_Edicao(@PathParam("id") Long id_evento, @FormParam("numero") String numero,
             @FormParam("cidade") String cidade, @FormParam("pais") String pais, @FormParam("ano") String ano,
             @FormParam("data_ini") String dataini_Str, @FormParam("data_fim") String datafim_Str) {
 
@@ -83,6 +82,7 @@ public class ServiceResource {
         edicao.setDatafim(Date.valueOf(datafim_Str));
         edicao.setEvento(evento);
         dao.setPersistir(edicao);
+        return edicao;
     }
 
     @PUT
