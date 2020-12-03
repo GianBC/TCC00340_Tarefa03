@@ -9,6 +9,7 @@ import Entidades.Edicao;
 import Entidades.Evento;
 import JPA.JPA_edicao;
 import JPA.JPA_evento;
+import java.io.IOException;
 import java.sql.Date;
 import java.util.List;
 import javax.ejb.Stateless;
@@ -26,6 +27,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PUT;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * REST Web Service
@@ -68,21 +70,33 @@ public class ServiceResource {
     @Produces({MediaType.APPLICATION_XML})
     public Edicao create_Form_Edicao(@PathParam("id") Long id_evento, @FormParam("numero") String numero,
             @FormParam("cidade") String cidade, @FormParam("pais") String pais, @FormParam("ano") String ano,
-            @FormParam("data_ini") String dataini_Str, @FormParam("data_fim") String datafim_Str) {
+            @FormParam("data_ini") String dataini_Str, @FormParam("data_fim") String datafim_Str,
+            @FormParam("id_evento_form") String id_evento_form, @Context HttpServletResponse response) throws IOException {
 
         JPA_evento dao_evento = new JPA_evento();
+        if (id_evento == -123 && id_evento_form.isEmpty()) {
+            id_evento = (long)-123;
+        } else if (id_evento == -123){
+            id_evento = Long.parseLong(id_evento_form);
+        }
         Evento evento = dao_evento.getEventoPorID(id_evento);
-        JPA_edicao dao = new JPA_edicao();
-        Edicao edicao = new Edicao();
-        edicao.setNumero(Integer.parseInt(numero));
-        edicao.setCidade(cidade);
-        edicao.setPais(pais);
-        edicao.setAno(ano);
-        edicao.setDataini(Date.valueOf(dataini_Str));
-        edicao.setDatafim(Date.valueOf(datafim_Str));
-        edicao.setEvento(evento);
-        dao.setPersistir(edicao);
-        return edicao;
+        if (evento == null) {
+            String msg=("Não foi localizado evento para o ID: "+id_evento+" - Retorne a página e informe um novo ID.");
+            response.sendError(400, msg);
+            return null;
+        } else {
+            JPA_edicao dao = new JPA_edicao();
+            Edicao edicao = new Edicao();
+            edicao.setNumero(Integer.parseInt(numero));
+            edicao.setCidade(cidade);
+            edicao.setPais(pais);
+            edicao.setAno(ano);
+            edicao.setDataini(Date.valueOf(dataini_Str));
+            edicao.setDatafim(Date.valueOf(datafim_Str));
+            edicao.setEvento(evento);
+            dao.setPersistir(edicao);
+            return edicao;
+        }
     }
 
     @PUT

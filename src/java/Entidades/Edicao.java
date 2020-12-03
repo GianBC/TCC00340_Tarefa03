@@ -14,6 +14,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  *
  * @author Gianluca Bensabat Calvano
  */
+//Cria uma tabela no MySQL com nome "edicao" no esquema "eventos_edicoes"
 @Entity
 @XmlRootElement
 @Table(name = "edicao")
@@ -22,16 +23,16 @@ public class Edicao implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private Long id;    //Gera o ID de forma automática
     private int numero;
     private String cidade, pais, ano;
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date dataini;
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date datafim;
-    @ManyToOne
-    @JoinColumn(name = "evento_id")
-    private Evento evento;
+    @ManyToOne  //Várias edições para um único evento
+    @JoinColumn(name = "evento_id") //A coluna "evento_id" guarda a chave estrangeira ,FK, do Evento relacionado
+    private Evento evento;  //Recebe o evento ao qual pertence a edição
 
     public Date getDataini() {
         return dataini;

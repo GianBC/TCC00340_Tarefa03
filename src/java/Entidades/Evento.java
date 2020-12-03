@@ -14,6 +14,7 @@ import javax.xml.bind.annotation.XmlTransient;
  *
  * @author Gianluca Bensabat Calvano
  */
+//Cria uma tabela no MySQL com nome "evento" no esquema "eventos_edicoes"
 @Entity
 @XmlRootElement
 @Table(name = "evento")
@@ -22,10 +23,10 @@ public class Evento implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private Long id;    //Gera o ID de forma automática
     private String nome, sigla, area, inst_org;
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "evento", cascade = CascadeType.ALL)
-    private List<Edicao> edicoes;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "evento", cascade = CascadeType.ALL)
+    private List<Edicao> edicoes;   //Guarda as edições relacionadas ao evento e apaga todas as edições do evento caso apague o evento
 
     @XmlTransient
     public List<Edicao> getEdicoes() {
